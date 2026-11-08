@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1026">
+<title>ساعة زجاجية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#0b1026;--bg2:#1b2a5e;--o1:#ff6a88;--o2:#4facfe;--o3:#a18cff;--tx:#fff;--tx2:rgba(255,255,255,.62);--gl:rgba(255,255,255,.11);--gb:rgba(255,255,255,.28);--ac:#7cf0d4;--bad:#ff6b6b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:"IBM Plex Sans Arabic",system-ui,-apple-system,sans-serif;color:var(--tx);background:linear-gradient(160deg,var(--bg1),var(--bg2));overflow:hidden}
+.bgc{position:fixed;z-index:0;left:50%;top:50%;width:max(150vw,620px);aspect-ratio:1;transform:translate(-50%,-50%);background:url(bg.webp) center/contain no-repeat;pointer-events:none}
+.orb{display:none;position:fixed;border-radius:50%;filter:blur(60px);opacity:.75;z-index:0}
+.o1{width:300px;height:300px;background:var(--o1);top:-60px;left:-80px}
+.o2{width:340px;height:340px;background:var(--o2);bottom:80px;right:-120px}
+.o3{width:240px;height:240px;background:var(--o3);top:40%;left:20%}
+.glass{background:var(--gl);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);border:1px solid var(--gb);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 40px rgba(0,0,0,.18)}
+main{position:relative;z-index:1;height:100%;overflow-y:auto;padding:22px 18px 120px;max-width:520px;margin:0 auto}
+section{display:none}section.on{display:block}
+h1{font-weight:300;font-size:1.05rem;color:var(--tx2);margin:6px 4px 18px}
+.big{border-radius:34px;padding:34px 18px;text-align:center}
+.time{font-size:4.2rem;font-weight:300;letter-spacing:.02em;direction:ltr;font-variant-numeric:tabular-nums;line-height:1}
+.time small{font-size:1.6rem;color:var(--tx2);margin-inline:6px}
+.date{margin-top:14px;color:var(--tx2)}
+.list{margin-top:16px;border-radius:28px;padding:6px 18px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--gb)}
+.row:last-child{border:0}
+.row b{font-weight:400}.row span.s{color:var(--tx2);font-size:.82rem;display:block}
+.row .t{font-size:1.7rem;font-weight:300;direction:ltr;font-variant-numeric:tabular-nums}
+button,input{font:inherit;color:inherit}
+.btn{border:1px solid var(--gb);background:var(--gl);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;padding:14px 26px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.4);transition:transform .15s}
+.btn:active{transform:scale(.95)}
+.btn.go{background:color-mix(in srgb,var(--ac) 35%,transparent);border-color:var(--ac)}
+.btn.stop{background:color-mix(in srgb,var(--bad) 35%,transparent);border-color:var(--bad)}
+.btns{display:flex;gap:14px;justify-content:center;margin-top:22px}
+.inp{background:var(--gl);border:1px solid var(--gb);border-radius:18px;padding:12px 14px;width:100%;outline:none}
+.inp:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.add{display:flex;gap:10px;margin-top:14px;align-items:center}
+.sw{position:relative;width:54px;height:32px;border-radius:99px;background:var(--gl);border:1px solid var(--gb);cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw.on{background:var(--ac)}.sw.on::after{inset-inline-start:25px}
+.del{background:none;border:0;color:var(--tx2);font-size:1.3rem;cursor:pointer;padding:6px 10px}
+.ringwrap{position:relative;width:260px;height:260px;margin:0 auto}
+.ringwrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringwrap .time{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem}
+.trk{fill:none;stroke:var(--gb);stroke-width:10}
+.prg{fill:none;stroke:var(--ac);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .25s linear}
+.set{display:flex;gap:10px;direction:ltr;justify-content:center;margin:22px 0 6px}
+.set label{text-align:center;color:var(--tx2);font-size:.8rem}
+.set select{width:84px;font-size:1.6rem;font-weight:300;display:block;margin-bottom:4px;padding:10px 0}
+select.inp{appearance:none;-webkit-appearance:none;text-align:center;text-align-last:center;padding-inline:6px}
+select option{color:#14182b;background:#fff}
+.pre{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.pre .btn{padding:8px 18px;font-size:.9rem}
+nav{position:fixed;z-index:5;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(92%,460px);display:flex;border-radius:999px;padding:7px}
+.tab{flex:1;border:0;background:none;border-radius:999px;padding:10px 0 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.72rem;color:var(--tx2);transition:.2s}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{background:rgba(255,255,255,.2);color:var(--tx);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.lap{direction:ltr}
+#ring,#egg,#setup,#picker{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.35);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#ring.on,#egg.on,#setup.on,#picker.on{display:flex}
+#setup{z-index:30}
+#ring .box,#egg .box,#setup .box,#picker .box{border-radius:36px;padding:36px 30px;text-align:center;width:min(86%,340px)}
+#ring h2,#egg h2{font-weight:300;font-size:2.4rem;margin:0 0 6px;direction:ltr}
+.empty{color:var(--tx2);text-align:center;padding:26px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bgc"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<main>
+<section id="s-clock" class="on">
+  <h1>الساعة</h1>
+  <div class="glass big"><div class="time" id="now"></div><div class="date" id="dt"></div></div>
+  <div class="glass list" id="world"></div>
+  <button class="btn" id="addC" style="width:100%;margin-top:14px">＋ إضافة بلد</button>
+</section>
+
+<section id="s-alarm">
+  <h1>المنبه</h1>
+  <div class="glass list" id="alarms"></div>
+  <button class="btn" id="reSetup" style="display:none;margin-top:14px;width:100%">فحص إعدادات التنبيه</button>
+  <div class="add" style="direction:ltr"><select class="inp" id="ah"></select><select class="inp" id="am"></select><select class="inp" id="ap"><option value="0">ص</option><option value="1">م</option></select></div>
+  <div class="add"><input class="inp" id="al" placeholder="اسم المنبه">
+    <button class="btn go" id="addA">أضف</button>
+  </div>
+</section>
+
+<section id="s-timer">
+  <h1>المؤقت</h1>
+  <div class="glass big" style="padding:28px 10px">
+    <div class="ringwrap">
+      <svg viewBox="0 0 240 240"><circle class="trk" cx="120" cy="120" r="108"/><circle class="prg" id="prg" cx="120" cy="120" r="108" stroke-dasharray="678.6" stroke-dashoffset="0"/></svg>
+      <div class="time" id="tshow">00:05:00</div>
+    </div>
+    <div class="set" id="tset">
+      <label><select class="inp" id="th"></select>ساعة</label>
+      <label><select class="inp" id="tm"></select>دقيقة</label>
+      <label><select class="inp" id="ts"></select>ثانية</label>
+    </div>
+    <div class="pre"><button class="btn" data-m="1">1 د</button><button class="btn" data-m="5">5 د</button><button class="btn" data-m="10">10 د</button><button class="btn" data-m="25">25 د</button></div>
+    <div class="btns"><button class="btn" id="tre">إعادة</button><button class="btn go" id="tgo">ابدأ</button></div>
+  </div>
+</section>
+
+<section id="s-sw">
+  <h1>ساعة الإيقاف</h1>
+  <div class="glass big"><div class="time" id="sw">00:00<small>.00</small></div>
+    <div class="btns"><button class="btn" id="swl">دورة</button><button class="btn go" id="swg">ابدأ</button></div>
+  </div>
+  <div class="glass list" id="laps" style="display:none"></div>
+</section>
+</main>
+
+<div id="ring"><div class="glass box"><h2 id="rt"></h2><p id="rl" style="color:var(--tx2);margin:0 0 22px"></p><button class="btn stop" id="rs">إيقاف</button></div></div>
+
+<div id="setup"><div class="glass box"><h2 style="direction:rtl;font-size:1.5rem;font-weight:400;margin:0 0 6px">قبل أن تبدأ</h2><p style="color:var(--tx2);margin:0 0 10px;font-size:.9rem">فعّل ما يلي ليرنّ المنبه والتطبيق مغلق.</p><div id="sl" style="text-align:start"></div><button class="btn go" id="sd" style="margin-top:18px;width:100%">لاحقاً</button></div></div>
+<div id="picker"><div class="glass box" style="padding:20px 16px;max-height:80vh;display:flex;flex-direction:column;text-align:start;width:min(92%,380px)"><input class="inp" id="pq" placeholder="ابحث عن بلد"><div id="pl" style="overflow-y:auto;margin-top:10px;flex:1"></div><button class="btn" id="pc" style="margin-top:12px;width:100%">إغلاق</button></div></div>
+<div id="egg"><div class="glass box"><h2 style="direction:rtl;font-size:1.9rem;line-height:1.5">🎉 تهانينا!<br>حليت اللغز</h2><button class="btn go" id="eg" style="margin-top:18px">تم</button></div></div>
+
+<nav class="glass" id="nav">
+  <button class="tab on" data-t="clock"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>الساعة</button>
+  <button class="tab" data-t="alarm"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M4 5l3-2M20 5l-3-2"/></svg>المنبه</button>
+  <button class="tab" data-t="timer"><svg viewBox="0 0 24 24"><path d="M9 2h6M12 14l3-3"/><circle cx="12" cy="14" r="8"/></svg>المؤقت</button>
+  <button class="tab" data-t="sw"><svg viewBox="0 0 24 24"><path d="M10 2h4M12 8v6l3 2"/><circle cx="12" cy="14" r="8"/></svg>الإيقاف</button>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s),p2=n=>String(n).padStart(2,"0");
+function t12(t){const[h,m]=t.split(":").map(Number);return`${h%12||12}:${p2(m)} ${h<12?"ص":"م"}`}
+function fill(id,max,v,min=0){const e=$(id);let h="";for(let i=min;i<=max;i++)h+=`<option value="${i}">${p2(i)}</option>`;e.innerHTML=h;e.value=v}
+const ST={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* tabs */
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="s-"+b.dataset.t));
+  $("main").scrollTop=0;
+});
+
+/* sound */
+let AC=null,ringTimer=null;
+function unlock(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==="suspended")AC.resume()}
+document.addEventListener("pointerdown",unlock);
+function beep(){if(!AC)return;[0,.22,.44].forEach(d=>{const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=880;o.connect(g);g.connect(AC.destination);const t=AC.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.3,t+.02);g.gain.linearRampToValueAtTime(0,t+.18);o.start(t);o.stop(t+.2)});if(navigator.vibrate)navigator.vibrate([200,100,200])}
+function ring(title,label){$("#rt").textContent=title;$("#rl").textContent=label||"";$("#ring").classList.add("on");clearInterval(ringTimer);beep();ringTimer=setInterval(beep,1500)}
+$("#rs").onclick=()=>{clearInterval(ringTimer);$("#ring").classList.remove("on")};
+
+const LN=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications)||null;
+const nid=a=>a.id%2000000000,CH="alarm2";
+function nextAt(t){const[h,m]=t.split(":").map(Number),d=new Date();d.setHours(h,m,0,0);if(d<=new Date())d.setDate(d.getDate()+1);return d}
+function fireAlarm(id){const a=alarms.find(x=>nid(x)===id);if(a){a.on=false;saveA();renderA();ring(t12(a.t),a.l||"المنبه")}else if(id===1)ring("انتهى الوقت","المؤقت")}
+async function nInit(){if(!LN)return;try{
+ await LN.createChannel({id:CH,name:"المنبهات",description:"المنبه والمؤقت",importance:5,visibility:1,vibration:true,sound:"alarm.wav"});
+ LN.addListener("localNotificationReceived",n=>fireAlarm(n.id));
+ LN.addListener("localNotificationActionPerformed",e=>fireAlarm(e.notification.id));
+ syncAlarms()}catch(e){}}
+async function syncAlarms(){if(!LN)return;try{
+ const p=await LN.getPending();const ids=p.notifications.filter(n=>n.id!==1).map(n=>({id:n.id}));
+ if(ids.length)await LN.cancel({notifications:ids});
+ const list=alarms.filter(a=>a.on).map(a=>({id:nid(a),title:a.l||"المنبه",body:t12(a.t),channelId:CH,sound:"alarm.wav",schedule:{at:nextAt(a.t),allowWhileIdle:true}}));
+ if(list.length)await LN.schedule({notifications:list})}catch(e){}}
+async function nTimer(end){if(!LN)return;try{await LN.cancel({notifications:[{id:1}]});await LN.schedule({notifications:[{id:1,title:"انتهى الوقت",body:"المؤقت",channelId:CH,sound:"alarm.wav",schedule:{at:new Date(end),allowWhileIdle:true}}]})}catch(e){}}
+async function nTimerCancel(){if(!LN)return;try{await LN.cancel({notifications:[{id:1}]})}catch(e){}}
+
+const PW=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Power)||null;
+async function sStatus(){const r={n:false,e:true,b:true};
+ try{r.n=(await LN.checkPermissions()).display==="granted"}catch(e){}
+ try{r.e=(await LN.checkExactNotificationSetting()).exact_alarm==="granted"}catch(e){}
+ try{if(PW)r.b=!!(await PW.status()).ignoring}catch(e){}
+ return r}
+const SSTEPS=[["n","الإشعارات","لتظهر تنبيهات المنبه",()=>LN.requestPermissions()],["e","المنبهات الدقيقة","ليرنّ في الوقت بالضبط",()=>LN.changeExactNotificationSetting()],["b","البطارية غير مقيّدة","كي لا يوقف النظام المنبه",()=>PW.request()]];
+async function sRender(){const r=await sStatus();
+ $("#sl").innerHTML=SSTEPS.map(([k,t,d])=>`<div class="row"><div><b>${t}</b><span class="s">${d}</span></div>${r[k]?'<span style="color:var(--ac)">✓ مفعّل</span>':`<button class="btn go" data-k="${k}" style="padding:8px 16px;font-size:.85rem">تفعيل</button>`}</div>`).join("");
+ $("#sd").textContent=Object.values(r).every(Boolean)?"ابدأ":"لاحقاً"}
+$("#sl").onclick=async e=>{const b=e.target.closest("[data-k]");if(!b)return;const st=SSTEPS.find(x=>x[0]===b.dataset.k);try{await st[3]()}catch(x){}setTimeout(sRender,700)};
+function showSetup(){$("#setup").classList.add("on");sRender()}
+$("#sd").onclick=()=>{$("#setup").classList.remove("on");ST.set("setupDone",true)};
+document.addEventListener("visibilitychange",()=>{if($("#setup").classList.contains("on"))sRender()});
+
+function egg(){$("#egg").classList.add("on")}
+$("#eg").onclick=()=>$("#egg").classList.remove("on");
+
+/* clock */
+const CZ=Object.fromEntries("AF Asia/Kabul|AL Europe/Tirane|DZ Africa/Algiers|AD Europe/Andorra|AO Africa/Luanda|AG America/Antigua|AR America/Argentina/Buenos_Aires|AM Asia/Yerevan|AU Australia/Sydney|AT Europe/Vienna|AZ Asia/Baku|BS America/Nassau|BH Asia/Bahrain|BD Asia/Dhaka|BB America/Barbados|BY Europe/Minsk|BE Europe/Brussels|BZ America/Belize|BJ Africa/Porto-Novo|BT Asia/Thimphu|BO America/La_Paz|BA Europe/Sarajevo|BW Africa/Gaborone|BR America/Sao_Paulo|BN Asia/Brunei|BG Europe/Sofia|BF Africa/Ouagadougou|BI Africa/Bujumbura|CV Atlantic/Cape_Verde|KH Asia/Phnom_Penh|CM Africa/Douala|CA America/Toronto|CF Africa/Bangui|TD Africa/Ndjamena|CL America/Santiago|CN Asia/Shanghai|CO America/Bogota|KM Indian/Comoro|CG Africa/Brazzaville|CD Africa/Kinshasa|CR America/Costa_Rica|CI Africa/Abidjan|HR Europe/Zagreb|CU America/Havana|CY Asia/Nicosia|CZ Europe/Prague|DK Europe/Copenhagen|DJ Africa/Djibouti|DM America/Dominica|DO America/Santo_Domingo|EC America/Guayaquil|EG Africa/Cairo|SV America/El_Salvador|GQ Africa/Malabo|ER Africa/Asmara|EE Europe/Tallinn|SZ Africa/Mbabane|ET Africa/Addis_Ababa|FJ Pacific/Fiji|FI Europe/Helsinki|FR Europe/Paris|GA Africa/Libreville|GM Africa/Banjul|GE Asia/Tbilisi|DE Europe/Berlin|GH Africa/Accra|GR Europe/Athens|GD America/Grenada|GT America/Guatemala|GN Africa/Conakry|GW Africa/Bissau|GY America/Guyana|HT America/Port-au-Prince|HN America/Tegucigalpa|HK Asia/Hong_Kong|HU Europe/Budapest|IS Atlantic/Reykjavik|IN Asia/Kolkata|ID Asia/Jakarta|IR Asia/Tehran|IQ Asia/Baghdad|IE Europe/Dublin|IT Europe/Rome|JM America/Jamaica|JP Asia/Tokyo|JO Asia/Amman|KZ Asia/Almaty|KE Africa/Nairobi|KI Pacific/Tarawa|KW Asia/Kuwait|KG Asia/Bishkek|LA Asia/Vientiane|LV Europe/Riga|LB Asia/Beirut|LS Africa/Maseru|LR Africa/Monrovia|LY Africa/Tripoli|LI Europe/Vaduz|LT Europe/Vilnius|LU Europe/Luxembourg|MG Indian/Antananarivo|MW Africa/Blantyre|MY Asia/Kuala_Lumpur|MV Indian/Maldives|ML Africa/Bamako|MT Europe/Malta|MH Pacific/Majuro|MR Africa/Nouakchott|MU Indian/Mauritius|MX America/Mexico_City|FM Pacific/Pohnpei|MD Europe/Chisinau|MC Europe/Monaco|MN Asia/Ulaanbaatar|ME Europe/Podgorica|MA Africa/Casablanca|MZ Africa/Maputo|MM Asia/Yangon|NA Africa/Windhoek|NR Pacific/Nauru|NP Asia/Kathmandu|NL Europe/Amsterdam|NZ Pacific/Auckland|NI America/Managua|NE Africa/Niamey|NG Africa/Lagos|KP Asia/Pyongyang|MK Europe/Skopje|NO Europe/Oslo|OM Asia/Muscat|PK Asia/Karachi|PW Pacific/Palau|PS Asia/Gaza|PA America/Panama|PG Pacific/Port_Moresby|PY America/Asuncion|PE America/Lima|PH Asia/Manila|PL Europe/Warsaw|PT Europe/Lisbon|QA Asia/Qatar|RO Europe/Bucharest|RU Europe/Moscow|RW Africa/Kigali|KN America/St_Kitts|LC America/St_Lucia|VC America/St_Vincent|WS Pacific/Apia|SM Europe/San_Marino|ST Africa/Sao_Tome|SA Asia/Riyadh|SN Africa/Dakar|RS Europe/Belgrade|SC Indian/Mahe|SL Africa/Freetown|SG Asia/Singapore|SK Europe/Bratislava|SI Europe/Ljubljana|SB Pacific/Guadalcanal|SO Africa/Mogadishu|ZA Africa/Johannesburg|KR Asia/Seoul|SS Africa/Juba|ES Europe/Madrid|LK Asia/Colombo|SD Africa/Khartoum|SR America/Paramaribo|SE Europe/Stockholm|CH Europe/Zurich|SY Asia/Damascus|TW Asia/Taipei|TJ Asia/Dushanbe|TZ Africa/Dar_es_Salaam|TH Asia/Bangkok|TL Asia/Dili|TG Africa/Lome|TO Pacific/Tongatapu|TT America/Port_of_Spain|TN Africa/Tunis|TR Europe/Istanbul|TM Asia/Ashgabat|TV Pacific/Funafuti|UG Africa/Kampala|UA Europe/Kiev|AE Asia/Dubai|GB Europe/London|US America/New_York|UY America/Montevideo|UZ Asia/Tashkent|VU Pacific/Efate|VA Europe/Vatican|VE America/Caracas|VN Asia/Ho_Chi_Minh|YE Asia/Aden|ZM Africa/Lusaka|ZW Africa/Harare".split("|").map(x=>x.split(" ")));
+let RN=null;try{RN=new Intl.DisplayNames(["ar"],{type:"region"})}catch(e){}
+const cn=c=>{try{return RN?RN.of(c):c}catch(e){return c}};
+let myC=ST.get("countries",["LY","EG","SD","SA","AE","GB","US"]).filter(c=>CZ[c]);
+const FM={};
+function z12(tz,d){const f=(FM[tz]=FM[tz]||new Intl.DateTimeFormat("en-GB",{timeZone:tz,hour:"numeric",minute:"2-digit",hourCycle:"h23"})).formatToParts(d);const g=t=>+f.find(p=>p.type===t).value;return t12(p2(g("hour")%24)+":"+p2(g("minute")))}
+function renderWorld(d){
+  $("#world").innerHTML=myC.length?myC.map(c=>{const tz=CZ[c],day=new Intl.DateTimeFormat("ar-u-nu-latn",{timeZone:tz,weekday:"long"}).format(d);
+    return `<div class="row"><div><b>${cn(c)}</b><span class="s">${day}</span></div><div style="display:flex;align-items:center;gap:6px"><div class="t">${z12(tz,d)}</div><button class="del" data-c="${c}" aria-label="حذف">✕</button></div></div>`}).join(""):'<div class="empty">اختر بلداً لعرض وقته.</div>';
+}
+$("#world").onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;myC=myC.filter(c=>c!==b.dataset.c);ST.set("countries",myC);renderWorld(new Date())};
+function renderPick(q){const d=new Date();q=(q||"").trim();
+  const L=Object.keys(CZ).map(c=>[c,cn(c)]).filter(x=>!q||x[1].includes(q)).sort((a,b)=>a[1].localeCompare(b[1],"ar"));
+  $("#pl").innerHTML=L.map(([c,n])=>`<div class="row" data-p="${c}" style="cursor:pointer"><div><b>${myC.includes(c)?"✓ ":""}${n}</b></div><div class="t" style="font-size:1.1rem">${z12(CZ[c],d)}</div></div>`).join("")||'<div class="empty">لا توجد نتائج</div>'}
+$("#pq").oninput=()=>renderPick($("#pq").value);
+$("#pl").onclick=e=>{const r=e.target.closest("[data-p]");if(!r)return;const c=r.dataset.p;if(!myC.includes(c)){myC.push(c);ST.set("countries",myC);renderWorld(new Date())}$("#picker").classList.remove("on")};
+$("#addC").onclick=()=>{$("#pq").value="";renderPick("");$("#picker").classList.add("on")};
+$("#pc").onclick=()=>$("#picker").classList.remove("on");
+let lastMin=-1,fired="";
+function tick(){
+  const d=new Date();
+  $("#now").innerHTML=`${d.getHours()%12||12}:${p2(d.getMinutes())}<small>:${p2(d.getSeconds())}</small><small>${d.getHours()<12?"ص":"م"}</small>`;
+  if(d.getMinutes()!==lastMin){lastMin=d.getMinutes();
+    $("#dt").textContent=new Intl.DateTimeFormat("ar-u-nu-latn",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(d);
+    renderWorld(d)}
+  const hm=p2(d.getHours())+":"+p2(d.getMinutes());
+  if(!LN&&d.getSeconds()<5)alarms.forEach(a=>{const key=a.id+hm;if(a.on&&a.t===hm&&fired!==key){fired=key;ring(t12(hm),a.l||"المنبه");a.on=false;saveA();renderA()}});
+}
+setInterval(tick,500);
+
+/* alarms */
+let alarms=ST.get("alarms",[]);
+function saveA(){ST.set("alarms",alarms);syncAlarms()}
+function renderA(){
+  $("#alarms").innerHTML=alarms.length?alarms.slice().sort((a,b)=>a.t.localeCompare(b.t)).map(a=>`<div class="row"><div><div class="t">${t12(a.t)}</div><span class="s">${a.l?a.l.replace(/</g,"&lt;"):"منبه"}</span></div><div style="display:flex;align-items:center;gap:4px"><button class="del" data-d="${a.id}" aria-label="حذف">✕</button><div class="sw ${a.on?"on":""}" data-i="${a.id}" role="switch" aria-checked="${a.on}" tabindex="0"></div></div></div>`).join(""):`<div class="empty">لا توجد منبهات. أضف أول منبه من الأسفل.</div>`;
+}
+$("#alarms").onclick=e=>{
+  const sw=e.target.closest(".sw"),dl=e.target.closest(".del");
+  if(sw){const a=alarms.find(x=>x.id==sw.dataset.i);a.on=!a.on;saveA();renderA()}
+  if(dl){alarms=alarms.filter(x=>x.id!=dl.dataset.d);saveA();renderA()}
+};
+$("#addA").onclick=()=>{const t=p2((+$("#ah").value%12)+(+$("#ap").value?12:0))+":"+p2(+$("#am").value);alarms.push({id:Date.now(),t,l:$("#al").value.trim(),on:true});$("#al").value="";saveA();renderA()};
+
+/* timer */
+const C=2*Math.PI*108;let T={total:0,rem:0,end:0,run:false,iv:null};
+function tInput(){return(+$("#th").value||0)*3600+(+$("#tm").value||0)*60+(+$("#ts").value||0)}
+function fmt(s){return p2(Math.floor(s/3600))+":"+p2(Math.floor(s%3600/60))+":"+p2(s%60)}
+function tDraw(){const s=Math.ceil(T.rem/1000);$("#tshow").textContent=fmt(s);$("#prg").style.strokeDashoffset=T.total?C*(1-T.rem/T.total):0}
+function tIdle(){T.total=T.rem=tInput()*1000;tDraw()}
+["#th","#tm","#ts"].forEach(i=>$(i).onchange=()=>{if(!T.run)tIdle()});
+document.querySelectorAll(".pre .btn").forEach(b=>b.onclick=()=>{if(T.run)return;$("#th").value=0;$("#tm").value=+b.dataset.m;$("#ts").value=0;tIdle()});
+$("#tgo").onclick=()=>{
+  if(T.run){clearInterval(T.iv);nTimerCancel();T.run=false;$("#tgo").textContent="تابع";$("#tgo").className="btn go";return}
+  if(!T.rem)tIdle();if(!T.rem)return;
+  if(T.rem===T.total&&T.total===67000)egg();
+  T.end=Date.now()+T.rem;T.run=true;nTimer(T.end);$("#tgo").textContent="إيقاف مؤقت";$("#tgo").className="btn stop";
+  T.iv=setInterval(()=>{T.rem=Math.max(0,T.end-Date.now());tDraw();
+    if(!T.rem){clearInterval(T.iv);T.run=false;$("#tgo").textContent="ابدأ";$("#tgo").className="btn go";ring("انتهى الوقت","المؤقت");tIdle()}},100)};
+$("#tre").onclick=()=>{clearInterval(T.iv);nTimerCancel();T.run=false;$("#tgo").textContent="ابدأ";$("#tgo").className="btn go";tIdle()};
+
+/* stopwatch */
+let W={el:0,st:0,run:false,raf:0,laps:[],lastLap:0};
+function wf(ms){const c=Math.floor(ms/10)%100,s=Math.floor(ms/1000)%60,m=Math.floor(ms/60000);return`${p2(m)}:${p2(s)}<small>.${p2(c)}</small>`}
+function wDraw(){const t=W.run?W.el+performance.now()-W.st:W.el;$("#sw").innerHTML=wf(t);if(W.run)W.raf=requestAnimationFrame(wDraw)}
+$("#swg").onclick=()=>{
+  if(W.run){W.el+=performance.now()-W.st;W.run=false;if(Math.floor(W.el/1000)===67)egg();cancelAnimationFrame(W.raf);$("#swg").textContent="تابع";$("#swg").className="btn go";$("#swl").textContent="إعادة";wDraw()}
+  else{W.st=performance.now();W.run=true;$("#swg").textContent="إيقاف";$("#swg").className="btn stop";$("#swl").textContent="دورة";wDraw()}};
+$("#swl").onclick=()=>{
+  if(W.run){const t=W.el+performance.now()-W.st;W.laps.unshift([t,t-W.lastLap]);W.lastLap=t;
+    $("#laps").style.display="block";$("#laps").innerHTML=W.laps.map((l,i)=>`<div class="row"><span class="s">دورة ${W.laps.length-i}</span><div class="t lap">${wf(l[1])}</div></div>`).join("")}
+  else{W={el:0,st:0,run:false,raf:0,laps:[],lastLap:0};$("#laps").style.display="none";$("#swl").textContent="دورة";$("#swg").textContent="ابدأ";wDraw()}};
+
+let WL=null;
+async function wl(){try{const need=alarms.some(a=>a.on)||T.run||W.run;
+ if(need&&!WL&&document.visibilityState==="visible"&&navigator.wakeLock){WL=await navigator.wakeLock.request("screen");WL.addEventListener("release",()=>{WL=null})}
+ else if(!need&&WL){await WL.release();WL=null}}catch(e){}}
+setInterval(wl,2000);document.addEventListener("visibilitychange",wl);
+fill("#th",23,0);fill("#tm",59,5);fill("#ts",59,0);fill("#ah",12,7,1);fill("#am",59,0);
+renderA();tIdle();tick();nInit();
+if(LN){$("#reSetup").style.display="block";$("#reSetup").onclick=showSetup;if(!ST.get("setupDone",false))showSetup()}
+</script>
+</body>
+</html>
